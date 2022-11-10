@@ -1,0 +1,21 @@
+*** Settings ***
+Library     RPA.Browser.Selenium    auto_close=${FALSE}
+Library     RPA.Excel.Files
+Library     RPA.Windows
+
+
+*** Tasks ***
+copysearch
+    Open Available Browser    google.com
+    Open Workbook    C:${/}Users${/}YOURNAME${/}YOURFOLDER${/}a1c2.xlsx
+    ${sheets}=    List Worksheets
+    ${table}=    Read Worksheet As Table    ${sheets}[0]    ${TRUE}
+    ${value}=    Set Variable    2
+    FOR    ${row}    IN    @{table}
+        Input Text    alias:Q    ${row}[NAME]
+        Send Keys    keys={ENTER}
+        ${text}=    RPA.Browser.Selenium.Get Text    alias:Div
+        Set Cell Value    ${value}    2    ${text}
+        ${value}=    Evaluate    ${value} + 1 
+    END
+    Save Workbook    C:${/}Users${/}YOURNAME${/}YOURFOLDER${/}a1c2.xlsx
